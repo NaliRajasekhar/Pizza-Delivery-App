@@ -1,7 +1,7 @@
 // routes/index.js
 const express = require('express');
 const router = express.Router();
-const authenticate = require('../utils/authenticate');
+const {authenticate }= require('../utils/authenticate');
 
 // Import controllers
 const userController = require('../controllers/userController');
