@@ -1,7 +1,7 @@
 // routes/index.js
 const express = require('express');
 const router = express.Router();
-const {authenticate }= require('../utils/authenticate');
+const { authenticate }= require('../utils/authenticate');
 
 // Import controllers
 const userController = require('../controllers/userController');
@@ -13,8 +13,8 @@ const orderController = require('../controllers/orderController');
 // User routes
 router.post('/users/signup', userController.signup);          // User signup
 router.post('/users/login', authController.login);            // User login
-router.put('/users/:id', authenticate, userController.updateUser); // Update user info (requires authentication)
-router.delete('/users/:id', authenticate, userController.deleteUser); // Delete user (requires authentication)
+router.put('/users/:id',authenticate, userController.updateUser); // Update user info (requires authentication)
+router.delete('/users/:id', userController.deleteUser); // Delete user (requires authentication)
 
 // Menu routes
 router.get('/menu', authenticate, menuController.getMenuItems); // Get menu items (requires authentication)
