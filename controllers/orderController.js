@@ -1,32 +1,23 @@
 // controllers/orderController.js
-const nodemailer = require('nodemailer');
+const db = require('../config/db');
 
-exports.createOrder = (req, res) => {
+
+exports.createOrder = async (req, res) => {
   const items = req.body.items; // [{ itemId, quantity }]
   const total = req.body.total;
 
-  db.query('INSERT INTO orders (user_id, items, total) VALUES (?, ?, ?)', [req.userId, JSON.stringify(items), total], (err) => {
-    if (err) return res.status(500).json({ error: 'Database error' });
+  try {
+    // Step 1: Insert the order into the database
+    await db.query('INSERT INTO orders (user_id, items, total) VALUES (?, ?, ?)', [req.user.id, JSON.stringify(items), total]);
 
-    // Send email receipt
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    // Step 2: Return success response after the order is inserted
+    res.status(200).json({ message: 'Order placed successfully' });
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: req.user.email,
-      subject: 'Your Pizza Order Receipt',
-      text: `Thank you for your order! Total: $${total}`,
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) return res.status(500).json({ error: 'Failed to send receipt email' });
-      res.status(200).json({ message: 'Order placed and receipt emailed' });
-    });
-  });
+  } catch (err) {
+    console.error('Error:', err.message);
+    // Handle error (either in DB insertion)
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
+
+
