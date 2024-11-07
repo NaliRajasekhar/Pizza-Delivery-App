@@ -13,25 +13,35 @@ exports.signup = async (req, res, next) => {
     address: Joi.string().required(),
   }, { abortEarly: false });
 
+  // Validate the request body
   const { error, value } = schema.validate(req.body);
   if (error) {
     return next(createError(error.details[0].message, CONSTANTS.STATUS_CODES.BAD_REQUEST));
-
   }
 
   const { name, email, password, address } = value;
-  const hashedPassword = await bcrypt.hash(password, 10);
 
-  db.query(
-    'INSERT INTO users (name, email, password, address) VALUES (?, ?, ?, ?)',
-    [name, email, hashedPassword, address],
-    (err, results) => {
-      if (err) {
-        return next(createError('Database error', CONSTANTS.STATUS_CODES.INTERNAL_ERROR));
-      }
-      res.status(201).json({ status: "SUCCESS", message: 'User created successfully', statusCode: 201 });
-    }
-  );
+  try {
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Use mysql2's promise API for the query
+    const [results] = await db.query(
+      'INSERT INTO users (name, email, password, address) VALUES (?, ?, ?, ?)',
+      [name, email, hashedPassword, address]
+    );
+
+    res.status(201).json({
+      status: "SUCCESS",
+      message: 'User created successfully',
+      statusCode: 201
+    });
+
+  } catch (err) {
+    console.error('Error:', err);
+    // Handle errors (whether it's database or hashing)
+    return next(createError('Database error', CONSTANTS.STATUS_CODES.INTERNAL_ERROR));
+  }
 };
 
 
