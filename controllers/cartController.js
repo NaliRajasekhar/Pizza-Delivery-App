@@ -2,7 +2,7 @@ const db = require('../config/db');
 const CONSTANTS = require('../constants');
 
 exports.addToCart = async (req, res,next) => {
-    const { item_id, quantity } = req.body;
+    const { item_id, quantity, imageUrl } = req.body;
 
     try {
 
@@ -13,8 +13,8 @@ exports.addToCart = async (req, res,next) => {
         }
 
         await db.query(
-            'INSERT INTO cart (user_id, item_id, quantity) VALUES (?, ?, ?)',
-            [req.user.id, item_id, quantity]
+            'INSERT INTO cart (user_id, item_id, quantity, imageUrl) VALUES (?, ?, ?, ?)',
+            [req.user.id, item_id, quantity, imageUrl]
         );
 
         res.status(201).json({ status: "SUCCESS", message: 'Item added to cart', statusCode: 201 });
@@ -29,7 +29,7 @@ exports.viewCart = async (req, res, next) => {
     const userId = req.user.id; 
     try {
         const query = `
-            SELECT cart.id, cart.item_id, cart.quantity, menu_items.name, menu_items.description, menu_items.price
+            SELECT cart.id, cart.item_id, cart.quantity,cart.imageUrl, menu_items.name, menu_items.description, menu_items.price
             FROM cart
             JOIN menu_items ON cart.item_id = menu_items.id
             WHERE cart.user_id = ?;
@@ -38,7 +38,7 @@ exports.viewCart = async (req, res, next) => {
         const [rows] = await db.query(query, [userId]); 
 
         if (rows.length === 0) {
-            return res.status(404).json({ status:"ERROR",message: 'Your cart is empty',statusCode:404 });
+            return res.status(200).json({ status:"SUCCESS",message: 'Your cart is empty',statusCode:200 });
         }
 
         res.status(200).json({ status: "SUCCESS",cartItems: rows,statusCode: 200 });
