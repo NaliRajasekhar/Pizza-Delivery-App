@@ -7,9 +7,8 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Using promise-based query with mysql2
-    const [results] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
 
+    const [results] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
     if (results.length === 0 || !(await bcrypt.compare(password, results[0].password))) {
       return res.status(400).json({ status: "ERROR", message: 'Invalid credentials', statusCode: 400 });
     }
