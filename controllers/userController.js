@@ -88,4 +88,37 @@ exports.deleteUser = async (req, res, next) => {
   }
 };
 
+exports.getUsers = async (req, res, next) => {
+
+
+  try {
+    const query = 'select * FROM users';
+    const result = await db.execute(query);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+    res.status(200).json({ status: "SUCCESS", message: 'User fetched successfully', statusCode: 200, data: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getUsersById = async (req, res, next) => {
+
+  const userId = req.body.user_id;
+  try {
+    const query = 'SELECT name,email,address,status,password FROM users WHERE id = ?';
+    const [result ]= await db.execute(query, [userId]);
+    
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+    res.status(200).json({ status: "SUCCESS", message: 'User fetched successfully', statusCode: 200, data: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
 

@@ -14,7 +14,7 @@ async function sendOrderEmail(itemDetails, totalCost, email, customerName) {
         },
     });
     const itemListHTML = itemDetails.map(item => {
-        return `<li>${item.name} (Number fo items - ${item.quantity}) - ₹${item.cost.toFixed(2)}</li>`;
+        return `<li>${item.name} (Number of items - ${item.quantity}) - ₹${item.cost.toFixed(2)}</li>`;
     }).join('');
     const mailOptions = {
         from:  process.env.EMAIL_USER,
