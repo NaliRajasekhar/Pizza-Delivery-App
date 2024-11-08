@@ -38,7 +38,7 @@ exports.signup = async (req, res, next) => {
     });
 
   } catch (err) {
-    console.error('Error:', err);
+    console.error('Error:', err.message);
     // Handle errors (whether it's database or hashing)
     return next(createError('Database error', CONSTANTS.STATUS_CODES.INTERNAL_ERROR));
   }
