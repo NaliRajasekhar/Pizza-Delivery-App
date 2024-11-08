@@ -1,4 +1,4 @@
-// controllers/menuController.js
+
 exports.getMenuItems = (req, res) => {
   const menuItems = [
     [
@@ -13,8 +13,6 @@ exports.getMenuItems = (req, res) => {
       { id: 9, title: 'Pesto Chicken', description: 'Grilled chicken with pesto sauce and mozzarella', price: 119, imageUrl: "https://www.dominos.co.in/files/items/MicrosoftTeams-image_(11).png"  },
       { id: 10, title: 'Buffalo Chicken', description: 'Spicy buffalo chicken with blue cheese dressing', price: 129, imageUrl: "https://www.dominos.co.in/files/items/MicrosoftTeams-image_(14).png"  }
     ]
-
-    // Add more hardcoded items as required
   ];
   res.status(200).json(menuItems);
 };
