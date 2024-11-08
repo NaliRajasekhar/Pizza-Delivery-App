@@ -5,10 +5,11 @@ const bodyParser = require('body-parser');
 const routes = require('./routes/index'); // Import routes
 const { globalErrorHandler } = require('./middleware/errorhandler');
 const CONSTANTS = require('./constants');
-
+const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors());
 // Middleware
 app.use(bodyParser.json());
 
